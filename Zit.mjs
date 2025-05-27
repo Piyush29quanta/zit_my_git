@@ -41,17 +41,17 @@ class Zit {
     }
   }
 
-  hashObject(content) {
+  hashObject(content) { //creates thes hashobject using sha1 and returns hex
     return crypto.createHash("sha1").update(content, "utf-8").digest("hex");
   }
 
   async add(fileToBeAdded) {
     await fs.mkdir(this.objectsPath, { recursive: true });
 
-    const fileData = await fs.readFile(fileToBeAdded, { encoding: "utf8" });
+    const fileData = await fs.readFile(fileToBeAdded, { encoding: "utf8" }); //takes the content of filetoBeAdded   
     const fileHash = this.hashObject(fileData);
 
-    const objectPath = path.join(this.objectsPath, fileHash);
+    const objectPath = path.join(this.objectsPath, fileHash); //cretes a path where file name is the hash created
 
     // Avoid rewriting if already stored
     try {
