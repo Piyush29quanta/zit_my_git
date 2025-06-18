@@ -66,6 +66,16 @@ class Zit {
     console.log(`Added ${fileToBeAdded}`);
   }
 
+  /**
+   * Updates the staging area (index) with the specified file and its hash.
+   * If the file already exists in the index, its hash is updated.
+   * Otherwise, the file and hash are added as a new entry.
+   *
+   * @async
+   * @param {string} filePath - The path of the file to update or add in the staging area.
+   * @param {string} fileHash - The hash of the file to associate with the file path.
+   * @returns {Promise<void>} Resolves when the staging area has been updated.
+   */
   async updateStagingArea(filePath, fileHash) {
     const index = JSON.parse(await fs.readFile(this.indexPath, { encoding: "utf-8" }));
 
@@ -76,10 +86,22 @@ class Zit {
       index.push({ path: filePath, hash: fileHash });
     }
 
-    await fs.writeFile(this.indexPath, JSON.stringify(index, null, 2));
+    await fs.writeFile(this.indexPath, JSON.stringify(index, null, 2)); 
   }
 
-  async commit(message) {
+  /**
+   * Creates a new commit with the given message.
+   * 
+   * This method reads the current index (staged files), retrieves the current HEAD commit,
+   * and constructs a new commit object containing the commit message, timestamp, staged files,
+   * and a reference to the parent commit. The commit is then hashed, saved to the objects directory,
+   * and the HEAD and index are updated accordingly.
+   *
+   * @async
+   * @param {string} message - The commit message describing the changes.
+   * @returns {Promise<void>} Resolves when the commit has been successfully created and saved.
+   */
+  async commit(message) { 
     const index = JSON.parse(await fs.readFile(this.indexPath, { encoding: "utf8" }));
     const parentCommit = await this.getCurrentHead();
 
